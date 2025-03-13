@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo_getx/controllers/todo_controller.dart';
+import 'package:todo_getx/views/home_view.dart';
 
 class AddTodoView extends StatelessWidget {
   AddTodoView({super.key});
@@ -54,7 +55,6 @@ class AddTodoView extends StatelessWidget {
                     titleController.text,
                     detailController.text,
                   );
-                  Get.back();
                 },
                 child: const Text("บันทึก"),
               ),

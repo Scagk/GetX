@@ -1,19 +1,16 @@
-import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class StorageServices {
-  final box = GetStorage();
-
-  static Future<void> init({required FirebaseOptions options}) async {
-    await GetStorage.init();
-  }
+class StorageService {
+  final firestore = FirebaseFirestore.instance;
 
   Future<void> write(String key, dynamic value) async {
-    await box.write(key, value);
+    var doc = await firestore.collection(key).add(value);
+    await doc.update({'docId': doc.id});
   }
 
-  dynamic read(String key) async {
-    return await box.read(key);
+  dynamic read(String key, String uid) async {
+    var snapshot =
+        await firestore.collection(key).where('uid', isEqualTo: uid).get();
+    return snapshot.docs.map((doc) => doc.data()).toList();
   }
-
 }

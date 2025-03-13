@@ -16,6 +16,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(title: 'To-do GetX', home: LoginView());
+    return GetMaterialApp(title: 'To-do GetX', home: HomeView());
   }
 }

@@ -3,19 +3,28 @@ import 'package:get/get.dart';
 import 'package:todo_getx/controllers/todo_controller.dart';
 import 'package:todo_getx/models/todo_model.dart';
 import 'package:todo_getx/views/add_todo_View.dart';
+import 'package:todo_getx/views/login_view.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  final TodoController todoController = Get.put(TodoController());
 
+  HomeView({super.key});
   @override
   Widget build(BuildContext context) {
-    final TodoController todoController = Get.put(TodoController());
-
+    todoController.fetchTodos();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Myapp'),
+        title: const Text('Scagk'),
         backgroundColor: Colors.green,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Get.off(LoginView());
+            },
+          ),
+        ],
       ),
       body: Obx(
         () => Container(
@@ -33,12 +42,12 @@ class HomeView extends StatelessWidget {
                       leading: Checkbox(
                         value: todo.isDone,
                         onChanged: (bool? newValue) {
-                          todoController.toggleDone(index);
+                          // todoController.toggleDone(index);
                         },
                       ),
                       trailing: IconButton(
                         onPressed: () {
-                          todoController.delete(index);
+                          // todoController.delete(index);
                         },
                         icon: Icon(Icons.delete),
                       ),
@@ -54,7 +63,7 @@ class HomeView extends StatelessWidget {
                     ? ElevatedButton(
                       style: ButtonStyle(),
                       onPressed: () {
-                        todoController.delete_compled();
+                        // todoController.delete_compled();
                       },
                       child: Icon(Icons.delete),
                     )
@@ -68,10 +77,19 @@ class HomeView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: null,
             onPressed: () {
               Get.to(AddTodoView());
             },
             child: Icon(Icons.add),
+          ),
+          SizedBox(height: 20),
+          FloatingActionButton(
+            heroTag: null,
+            onPressed: () {
+              Get.off(LoginView());
+            },
+            child: Icon(Icons.login),
           ),
         ],
       ),
