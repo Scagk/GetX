@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:todo_getx/controllers/auth_controller.dart';
 import 'package:todo_getx/models/todo_model.dart';
@@ -26,27 +27,37 @@ class TodoController extends GetxController {
     }
   }
 
-  void addTodo(String title, String subtitle) {
+  Future<void> addTodo(String title, String subtitle) async {
     TodoModel todo = TodoModel(
       title,
       subtitle,
       false,
       uid: authController.user.value?.uid,
     );
+    String docId = await storageService.write('todoList', todo.toJson());
+    todo.docId = docId;
     todoList.add(todo);
-    storageService.write('todoList', todo.toJson());
     Get.back();
   }
 
-  void toggleTodo(int index) {
-    todoList[index].isDone = !todoList[index].isDone;
+  Future<void> updateTodo(TodoModel todo) async {
+    todoList.firstWhere((todo) => todo.docId == todo.docId).title;
+    todoList.firstWhere((todo) => todo.docId == todo.docId).subtitle;
     todoList.refresh();
-    storageService.write('todoList', todoList.toJson());
+    await storageService.update('todoList', todo.docId ?? '', todo.toJson());
   }
 
-  void deleteTodo(int index) {
-    todoList.removeAt(index);
-    storageService.write('todoList', todoList.toJson());
+  Future<void> toggleTodo(int index) async {
+    todoList[index].isDone = !todoList[index].isDone;
+    todoList.refresh();
+    storageService.update('todoList', todoList[index].docId ?? '', {
+      'isDone': todoList[index].isDone,
+    });
+  }
+
+  void deleteTodo(String docId) {
+    todoList.removeWhere((todo) => todo.docId == docId);
+    storageService.delete('todoList', docId);
   }
 
   void clearTodo() {

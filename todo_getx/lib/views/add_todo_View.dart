@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo_getx/controllers/todo_controller.dart';
+import 'package:todo_getx/models/todo_model.dart';
 import 'package:todo_getx/views/home_view.dart';
 
-class AddTodoView extends StatelessWidget {
-  AddTodoView({super.key});
+class AddTodoView extends StatefulWidget {
+  AddTodoView({super.key, this.todo});
+  TodoModel? todo;
 
+  @override
+  State<AddTodoView> createState() => _AddTodoViewState();
+}
+
+class _AddTodoViewState extends State<AddTodoView> {
   final TodoController todoController = Get.put(TodoController());
   final TextEditingController titleController = TextEditingController();
   final TextEditingController detailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.todo != null) {
+      titleController.text = widget.todo!.title;
+      detailController.text = widget.todo!.subtitle;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +67,19 @@ class AddTodoView extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  todoController.addTodo(
-                    titleController.text,
-                    detailController.text,
-                  );
+                  if (titleController.text.isEmpty) return;
+                  if (widget.todo != null) {
+                    widget.todo!.title = titleController.text;
+                    widget.todo!.subtitle = detailController.text;
+                    todoController.updateTodo(widget.todo!);
+                  } else {
+                    todoController.addTodo(
+                      titleController.text,
+                      detailController.text,
+                    );
+                  }
+                  Get.back();
+                  Get.snackbar("Success!", "has been saved");
                 },
                 child: const Text("บันทึก"),
               ),

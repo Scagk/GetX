@@ -15,13 +15,14 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scagk'),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color.fromARGB(255, 175, 76, 76),
         centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              Get.off(LoginView());
+              Get.off(HomeView());
+              todoController.clearTodo();
             },
           ),
         ],
@@ -29,6 +30,7 @@ class HomeView extends StatelessWidget {
       body: Obx(
         () => Container(
           padding: EdgeInsets.only(bottom: 20),
+          color: const Color.fromARGB(255, 247, 213, 213),
           child: Column(
             children: [
               Expanded(
@@ -42,33 +44,36 @@ class HomeView extends StatelessWidget {
                       leading: Checkbox(
                         value: todo.isDone,
                         onChanged: (bool? newValue) {
-                          // todoController.toggleDone(index);
+                          todoController.toggleTodo(index);
                         },
                       ),
                       trailing: IconButton(
                         onPressed: () {
-                          // todoController.delete(index);
+                          todoController.deleteTodo(todo.docId ?? '');
                         },
                         icon: Icon(Icons.delete),
                       ),
+                      onTap: () {
+                        Get.to(AddTodoView(todo: todo));
+                      },
                     );
                   },
                 ),
               ),
-              Obx(() {
-                bool anyCompleted = todoController.todoList.any(
-                  (todo) => todo.isDone,
-                );
-                return anyCompleted
-                    ? ElevatedButton(
-                      style: ButtonStyle(),
-                      onPressed: () {
-                        // todoController.delete_compled();
-                      },
-                      child: Icon(Icons.delete),
-                    )
-                    : SizedBox.shrink();
-              }),
+              // Obx(() {
+              //   bool anyCompleted = todoController.todoList.any(
+              //     (todo) => todo.isDone,
+              //   );
+              //   return anyCompleted
+              //       ? ElevatedButton(
+              //         style: ButtonStyle(),
+              //         onPressed: () {
+              //           todoController.deleteTodo(todo.docId ?? '');
+              //         },
+              //         child: Icon(Icons.delete),
+              //       )
+              //       : SizedBox.shrink();
+              // }),
             ],
           ),
         ),
